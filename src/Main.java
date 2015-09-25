@@ -5,6 +5,8 @@ import java.io.InputStreamReader;
 public class Main {
 
     static boolean minus;
+    static boolean firstZero = false;
+    static boolean secondZero = false;
 
     public static void main(String[] args) {
         String str = "";
@@ -15,7 +17,7 @@ public class Main {
         try {
             str = reader.readLine();
         } catch (IOException e) {
-            System.out.println("Can't read your expression");;
+            System.out.println("Can't read your expression");
         }
         try {
             recursion(str);
@@ -37,8 +39,24 @@ public class Main {
         if(minus) {
             firstElement = - + firstElement;
         }
-        str = str.replace(firstElement + operand + secondElement, res);
+
+        if(firstZero && secondZero){
+            str = str.replace(0 + firstElement + operand + 0 + secondElement, res);
+        }else {
+            if (firstZero) {
+                str = str.replace(0 + firstElement + operand + secondElement, res);
+            }else {
+                if (secondZero) {
+                    str = str.replace(firstElement + operand + 0 + secondElement, res);
+                } else {
+                    str = str.replace(firstElement + operand + secondElement, res);
+                }
+            }
+        }
         minus = false;
+        firstZero = false;
+        secondZero = false;
+
 
         if ((findOperand(str)) == -1) {
             System.out.println("Result is: " + result);
@@ -99,10 +117,14 @@ public class Main {
                 String st = s.toString();
 
                 if (rslt.equals("0")) {
+                    if(firstZero) {
+                        secondZero = true;
+                    }
+                    firstZero = true;
                     if ((s == '+') || (s == '-')) {
                         return Integer.parseInt(rslt);
                     } else {
-                        throw new Exception();
+                        return Integer.parseInt(st);
                     }
                 }
                 if ((s == '+') || (s == '-')) {
