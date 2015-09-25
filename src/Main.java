@@ -77,7 +77,7 @@ public class Main {
         return op;
     }
 
-    private static int getElement(String str, int startPosition){
+    private static int getElement(String str, int startPosition)  throws Exception {
 
             Character s = str.charAt(startPosition);
 
@@ -85,6 +85,9 @@ public class Main {
                 minus = true;
                 startPosition++;
                 s = str.charAt(startPosition);
+                if (s == '0') {
+                    throw new Exception();
+                }
             }
 
             String rslt = s.toString();
@@ -94,11 +97,19 @@ public class Main {
                 }
                 s = str.charAt(++startPosition);
                 String st = s.toString();
-                    if ((s == '+') || (s == '-'))  {
+
+                if (rslt.equals("0")) {
+                    if ((s == '+') || (s == '-')) {
                         return Integer.parseInt(rslt);
-                    }else {
-                        rslt += st;
+                    } else {
+                        throw new Exception();
                     }
+                }
+                if ((s == '+') || (s == '-')) {
+                    return Integer.parseInt(rslt);
+                } else {
+                    rslt += st;
+                }
             }
         return Integer.parseInt(rslt);
     }
