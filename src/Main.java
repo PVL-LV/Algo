@@ -7,6 +7,7 @@ public class Main {
     static boolean minus;
     static boolean firstZero = false;
     static boolean secondZero = false;
+    static boolean fRun = false;
 
     public static void main(String[] args) {
         String str = "";
@@ -37,26 +38,36 @@ public class Main {
         String res = Integer.toString(result);
 
         if(minus) {
-            firstElement = - + firstElement;
-        }
-
-        if(firstZero && secondZero){
-            str = str.replace(0 + firstElement + operand + 0 + secondElement, res);
-        }else {
-            if (firstZero) {
-                str = str.replace(0 + firstElement + operand + secondElement, res);
-            }else {
-                if (secondZero) {
-                    str = str.replace(firstElement + operand + 0 + secondElement, res);
-                } else {
-                    str = str.replace(firstElement + operand + secondElement, res);
-                }
+            if(!firstZero) {
+                firstElement = -+firstElement;
             }
         }
+
+        if(firstZero && secondZero) {
+            if (minus) {
+                str = str.replace("-" + 0 + firstElement + operand + 0 + secondElement, res);
+            } else {
+                str = str.replace(0 + firstElement + operand + 0 + secondElement, res);
+            }
+        }
+        if (firstZero) {
+                if (minus) {
+                    str = str.replace( "-" + 0 + firstElement + operand + secondElement, res);
+                } else {
+                    str = str.replace(0 + firstElement + operand + secondElement, res);
+                }
+        }
+        if (secondZero) {
+            str = str.replace(firstElement + operand + 0 + secondElement, res);
+        } else {
+            str = str.replace(firstElement + operand + secondElement, res);
+        }
+
+
         minus = false;
         firstZero = false;
         secondZero = false;
-
+        fRun = false;
 
         if ((findOperand(str)) == -1) {
             System.out.println("Result is: " + result);
@@ -103,8 +114,26 @@ public class Main {
                 minus = true;
                 startPosition++;
                 s = str.charAt(startPosition);
-                if (s == '0') {
+                //check for double "-"
+                if(s == '-') {
                     throw new Exception();
+                }
+                if (s == '0') {
+                    Character z = str.charAt(++startPosition);
+                    if ((z == '+') || (z == '-') || (z == '0')) {
+                        throw new Exception();
+                    }else {
+                        startPosition--;
+                    }
+                }
+            }
+            // check for double zero
+            if (s == '0') {
+                Character z = str.charAt(++startPosition);
+                if ((z == '+') || (z == '-') || (z == '0')) {
+                    throw new Exception();
+                }else {
+                    startPosition--;
                 }
             }
 
@@ -117,15 +146,29 @@ public class Main {
                 String st = s.toString();
 
                 if (rslt.equals("0")) {
+
                     if(firstZero) {
                         secondZero = true;
+                    } else {
+                        if(fRun) {
+                            secondZero = true;
+                        }
                     }
-                    firstZero = true;
+                    if(!fRun) {
+                        firstZero = true;
+                    }
+                    if (!fRun) {
+                        fRun = true;
+                    }
+
                     if ((s == '+') || (s == '-')) {
                         return Integer.parseInt(rslt);
                     } else {
                         return Integer.parseInt(st);
                     }
+                }
+                if (!fRun) {
+                    fRun = true;
                 }
                 if ((s == '+') || (s == '-')) {
                     return Integer.parseInt(rslt);
